@@ -732,11 +732,16 @@
     updateLanguageLinks();
 
     // --- Event Delegation for Language Switcher Clicks ---
+    // This listener is attached to the body and will catch clicks on any language link,
+    // even if they are dynamically added or re-rendered by Bootstrap's dropdowns.
     document.body.addEventListener('click', function(event) {
+        // Find the closest parent that is a language-switching link
         const targetLink = event.target.closest('.dropdown-item[data-lang], .mobile-nav-link[data-lang]');
         
         if (targetLink && targetLink.href && targetLink.href !== '#') {
-            event.preventDefault(); 
+            // Prevent default browser navigation which might be inconsistent
+            event.preventDefault();
+            // Perform the navigation manually
             window.location.href = targetLink.href;
         }
     });
@@ -807,7 +812,7 @@
         const overlayTransitionDuration = parseFloat(window.getComputedStyle(mobileNavOverlay).transitionDuration);
         if (overlayTransitionDuration > 0 && window.getComputedStyle(mobileNavOverlay).transitionProperty.includes('opacity')) {
             mobileNavOverlay.addEventListener('transitionend', hideOverlayAfterTransition, { once: true });
-        } else { // This is the corrected 'else' block
+        } else {
             mobileNavOverlay.classList.add('d-none');
         }
         if (body) body.style.overflow = '';

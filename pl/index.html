@@ -650,7 +650,7 @@
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -725,11 +725,16 @@
     updateLanguageLinks();
 
     // --- Event Delegation for Language Switcher Clicks ---
+    // This listener is attached to the body and will catch clicks on any language link,
+    // even if they are dynamically added or re-rendered by Bootstrap's dropdowns.
     document.body.addEventListener('click', function(event) {
+        // Find the closest parent that is a language-switching link
         const targetLink = event.target.closest('.dropdown-item[data-lang], .mobile-nav-link[data-lang]');
         
         if (targetLink && targetLink.href && targetLink.href !== '#') {
-            event.preventDefault(); 
+            // Prevent default browser navigation which might be inconsistent
+            event.preventDefault();
+            // Perform the navigation manually
             window.location.href = targetLink.href;
         }
     });
@@ -820,6 +825,7 @@
         if (mobileNavOverlay) {
             const mobileNavLinks = mobileNavOverlay.querySelectorAll('.mobile-nav-link');
             mobileNavLinks.forEach(link => {
+                // Check if the link is not disabled and has a valid href that isn't just '#'
                 if (!link.classList.contains('disabled') && link.getAttribute('href') && link.getAttribute('href') !== '#') {
                     link.addEventListener('click', function() { closeMobileMenu(); });
                 }
