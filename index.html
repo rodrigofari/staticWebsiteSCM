@@ -657,7 +657,7 @@
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous"></script>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -667,7 +667,7 @@
         yearSpan.textContent = new Date().getFullYear();
       }
 
-      // Define language configurations
+      // Define language configurations (ensure this object is COMPLETE in ALL files)
       const languages = {
         'en': { name: 'English', path: '' }, // English is at the root
         'pl': { name: 'Polski', path: 'pl/' },
@@ -679,28 +679,25 @@
         'uk': { name: 'Українська', path: 'uk/' },
         'fi': { name: 'Suomi', path: 'fi/' },
         'sv': { name: 'Svenska', path: 'sv/' },
-        'ru': { name: 'Русский', path: 'ru/' } // Added Russian
+        'ru': { name: 'Русский', path: 'ru/' }
       };
 
       // Function to update language links based on the current page
       function updateLanguageLinks() {
-          const currentPathname = window.location.pathname; // e.g., "/staticWebsiteSCM/lessons.html" or "/staticWebsiteSCM/pl/lessons.html"
-          let currentPageFilename = currentPathname.split('/').pop(); // e.g., "lessons.html" or "" if a directory name
+          const currentPathname = window.location.pathname;
+          let currentPageFilename = currentPathname.split('/').pop();
 
-          // If currentPathname ends with a slash (e.g., /pt/), the last .pop() will be empty.
-          // In such cases, we assume the page is index.html within that directory.
-          // Also handle cases like /repoName/ or /repoName
-          const repoName = '/staticWebsiteSCM';
+          const repoName = '/staticWebsiteSCM'; // CRITICAL: ENSURE THIS EXACTLY MATCHES YOUR REPO NAME WITH A LEADING SLASH
+
+          // Adjust currentPageFilename if it's a root or repo-root path (e.g., '/', '/repoName/', '/repoName')
           if (currentPageFilename === '' || currentPathname.endsWith('/') || currentPathname === repoName || currentPathname === `${repoName}/`) {
               currentPageFilename = 'index.html';
           }
-
-          // Determine the base URL including the repository name for GitHub Pages.
+          
           let siteRootPath = '';
           if (window.location.origin.includes('github.io') && currentPathname.startsWith(repoName)) {
               siteRootPath = repoName;
           }
-          // For custom domains or local testing, siteRootPath might be empty.
 
           document.querySelectorAll('.dropdown-item[data-lang], .mobile-nav-link[data-lang]').forEach(link => {
               const targetLangCode = link.getAttribute('data-lang');
@@ -709,20 +706,16 @@
               const langConfig = languages[targetLangCode];
               if (!langConfig) return;
 
-              // Construct the new path for the target language.
-              // This is the core of the URL construction logic.
               let newPath = `${siteRootPath}/${langConfig.path}${currentPageFilename}`;
-              
-              // Clean up any potential double slashes that might occur (e.g., if siteRootPath was empty or had a trailing slash)
-              // Ensure https:// is preserved correctly.
-              link.href = `${window.location.origin}${newPath.replace(/\/\/+/g, '/')}`;
+              link.href = `${window.location.origin}${newPath.replace(/\/\/+/g, '/')}`; // Ensure absolute URL and clean double slashes
           });
       }
 
-      // Call the function on DOMContentLoaded to set initial links
+      // Call the function on DOMContentLoaded to set initial links for language switcher
       updateLanguageLinks();
 
-      // --- MODIFIED SCRIPT for DESKTOP and MOBILE active nav link (handles hash correctly and language subdirectories) ---
+
+      // --- SCRIPT FOR DESKTOP and MOBILE active nav link ---
       // This part ensures the navigation links get the 'active' class
       const currentFullUrlPathForNav = window.location.pathname; 
       const currentHashForNav = window.location.hash; 
@@ -815,6 +808,7 @@
           if (mobileNavOverlay) {
               const mobileNavLinks = mobileNavOverlay.querySelectorAll('.mobile-nav-link');
               mobileNavLinks.forEach(link => {
+                  // Check if the link is not disabled and has a valid href that isn't just '#'
                   if (!link.classList.contains('disabled') && link.getAttribute('href') && link.getAttribute('href') !== '#') {
                       link.addEventListener('click', function() { closeMobileMenu(); });
                   }
