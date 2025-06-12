@@ -88,8 +88,7 @@
         </a>
       </div>
 
-      <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0 flex-grow-1"> <li><a href="index.html" class="nav-link px-2">Strona główna</a></li>
-        <li><a href="lessons.html" class="nav-link px-2">Lekcje</a></li>
+      <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0 flex-grow-1"> <li><a href="lessons.html" class="nav-link px-2">Lekcje</a></li>
         <li><a href="discover_madeira.html" class="nav-link px-2">Odkryj Maderę</a></li>
         <li><a href="index.html#FAQs" class="nav-link px-2">FAQ</a></li>
         <li><a href="about_us.html" class="nav-link px-2">O nas</a></li>
@@ -617,11 +616,11 @@
             </div>
           </div>
       </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#surfClubCarousel" data-bs-slide="prev">
+      <button class="carousel-control-prev" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Poprzedni</span>
       </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#surfClubCarousel" data-bs-slide="next">
+      <button class="carousel-control-next" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="next">
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Następny</span>
       </button>
@@ -651,193 +650,192 @@
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous"></script>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // --- Script for current year ---
-      const yearSpan = document.getElementById('current-year');
-      if (yearSpan) {
-        yearSpan.textContent = new Date().getFullYear();
-      }
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // --- Script for current year ---
+    const yearSpan = document.getElementById('current-year');
+    if (yearSpan) {
+      yearSpan.textContent = new Date().getFullYear();
+    }
 
-      // Define language configurations
-      const languages = {
-        'en': { name: 'English', path: '' }, // English is at the root
-        'pl': { name: 'Polski', path: 'pl/' },
-        'it': { name: 'Italiano', path: 'it/' },
-        'de': { name: 'Deutsch', path: 'de/' },
-        'fr': { name: 'Français', path: 'fr/' },
-        'pt': { name: 'Português', path: 'pt/' },
-        'es': { name: 'Español', path: 'es/' },
-        'uk': { name: 'Українська', path: 'uk/' },
-        'fi': { name: 'Suomi', path: 'fi/' },
-        'sv': { name: 'Svenska', path: 'sv/' },
-        'ru': { name: 'Руский', path: 'ru/' } // Changed name to 'Русский' to match previous guidance
-      };
+    // Define language configurations
+    const languages = {
+      'en': { name: 'English', path: '' }, // English is at the root
+      'pl': { name: 'Polski', path: 'pl/' },
+      'it': { name: 'Italiano', path: 'it/' },
+      'de': { name: 'Deutsch', path: 'de/' },
+      'fr': { name: 'Français', path: 'fr/' },
+      'pt': { name: 'Português', path: 'pt/' },
+      'es': { name: 'Español', path: 'es/' },
+      'uk': { name: 'Українська', path: 'uk/' },
+      'fi': { name: 'Suomi', path: 'fi/' },
+      'sv': { name: 'Svenska', path: 'sv/' },
+      'ru': { name: 'Русский', path: 'ru/' } 
+    };
 
-      // Function to calculate the correct base filename for the current page
-      const getCurrentPageBaseFilename = () => {
-          const currentPathname = window.location.pathname;
-          const repoName = '/staticWebsiteSCM';
-          let filename = '';
+    // Function to calculate the correct base filename for the current page
+    const getCurrentPageBaseFilename = () => {
+        const currentPathname = window.location.pathname;
+        const repoName = '/staticWebsiteSCM';
+        let filename = '';
 
-          let pathParts = currentPathname.split('/').filter(part => part !== ''); 
+        let pathParts = currentPathname.split('/').filter(part => part !== ''); 
 
-          if (window.location.origin.includes('github.io') && pathParts[0] === 'staticWebsiteSCM') {
-              pathParts.shift(); 
-          }
+        if (window.location.origin.includes('github.io') && pathParts[0] === 'staticWebsiteSCM') {
+            pathParts.shift(); 
+        }
 
-          if (pathParts.length === 0 || pathParts[pathParts.length - 1].includes('.')) {
-              filename = pathParts.length === 0 ? 'index.html' : pathParts[pathParts.length - 1];
-          } else {
-              filename = 'index.html';
-          }
+        if (pathParts.length === 0 || pathParts[pathParts.length - 1].includes('.')) {
+            filename = pathParts.length === 0 ? 'index.html' : pathParts[pathParts.length - 1];
+        } else {
+            filename = 'index.html';
+        }
 
-          return filename;
-      };
+        return filename;
+    };
 
-      // --- Language Switcher Functionality ---
-      const updateLanguageLinks = () => {
-          const baseFilename = getCurrentPageBaseFilename(); 
-          const repoName = '/staticWebsiteSCM'; 
-          let siteRootPath = '';
+    // --- Language Switcher Functionality ---
+    const updateLanguageLinks = () => {
+        const baseFilename = getCurrentPageBaseFilename(); 
+        const repoName = '/staticWebsiteSCM'; 
+        let baseUrlPath = repoName; // Base URL path for ALL generated links, including repo name
 
-          if (window.location.origin.includes('github.io') && window.location.pathname.startsWith(repoName)) {
-              siteRootPath = repoName;
-          }
+        document.querySelectorAll('.dropdown-item[data-lang], .mobile-nav-link[data-lang]').forEach(linkElement => {
+            const targetLangCode = linkElement.getAttribute('data-lang');
+            const langConfig = languages[targetLangCode];
 
-          document.querySelectorAll('.dropdown-item[data-lang], .mobile-nav-link[data-lang]').forEach(linkElement => {
-              const targetLangCode = linkElement.getAttribute('data-lang');
-              const langConfig = languages[targetLangCode];
+            if (langConfig) {
+                let constructedPath;
+                if (langConfig.path === '') { // This is the English (root) language
+                    // For English, the path from the repository root is just the filename.
+                    constructedPath = `${baseUrlPath}/${baseFilename}`;
+                } else {
+                    // For other languages, it's repository root + language subdirectory + filename.
+                    constructedPath = `${baseUrlPath}/${langConfig.path}${baseFilename}`;
+                }
+                
+                // Construct the final absolute URL, cleaning up any potential multiple slashes.
+                linkElement.href = `${window.location.origin}${constructedPath.replace(/\/\/+/g, '/')}`;
+            }
+        });
+    };
 
-              if (langConfig) {
-                  let targetPath;
-                  if (langConfig.path === '') { // This is the English (root) page
-                      targetPath = `${siteRootPath}/${baseFilename}`;
-                  } else {
-                      targetPath = `${siteRootPath}/${langConfig.path}${baseFilename}`;
-                  }
-                  
-                  linkElement.href = `${window.location.origin}${targetPath.replace(/\/\/+/g, '/')}`;
-              }
-          });
-      };
+    updateLanguageLinks();
 
-      updateLanguageLinks();
-
-      // --- Event Delegation for Language Switcher Clicks ---
-      document.body.addEventListener('click', function(event) {
-          const targetLink = event.target.closest('.dropdown-item[data-lang], .mobile-nav-link[data-lang]');
-          
-          if (targetLink && targetLink.href && targetLink.href !== '#') {
-              event.preventDefault(); 
-              window.location.href = targetLink.href;
-          }
-      });
-
-      // --- Active Navigation Link Styling ---
-      const setActiveNavLink = () => {
-          const currentPathname = window.location.pathname;
-          const currentHash = window.location.hash;
-          const baseCurrentPageFilename = getCurrentPageBaseFilename(); 
-
-          document.querySelectorAll('#mainNavbar .nav-link, #mobileNavOverlay .mobile-nav-link').forEach(link => {
-              const linkHref = link.getAttribute('href');
-              let linkBaseFilename = linkHref.includes('/') ? linkHref.substring(linkHref.lastIndexOf('/') + 1).split('#')[0] : linkHref.split('#')[0];
-              const linkHash = linkHref.includes('#') ? '#' + linkHref.split('#')[1] : '';
-
-              let isActive = false;
-
-              if (linkBaseFilename === baseCurrentPageFilename) {
-                  if (currentHash) {
-                      if (linkHash && linkHash === currentHash) {
-                          isActive = true;
-                      }
-                  } else {
-                      if (!linkHash) {
-                          isActive = true;
-                      }
-                  }
-              }
-              
-              const repoName = '/staticWebsiteSCM';
-              if (baseCurrentPageFilename === 'index.html' && 
-                  (linkHref === 'index.html' || linkHref === '/' || linkHref === repoName || linkHref === `${repoName}/`)) {
-                  isActive = true;
-              }
-
-
-              if (isActive) {
-                  link.classList.add('active');
-              } else {
-                  link.classList.remove('active');
-              }
-          });
-      };
-
-      setActiveNavLink();
-
-
-      // --- MOBILE MENU TOGGLE & RESIZE HANDLING ---
-      const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-      const mobileMenuClose = document.getElementById('mobileMenuClose');
-      const mobileNavOverlay = document.getElementById('mobileNavOverlay');
-      const body = document.body;
-
-      if (!mobileMenuToggle) console.error('Mobile Menu Toggle button (mobileMenuToggle) not found.');
-      if (!mobileNavOverlay) console.error('Mobile Navigation Overlay (mobileNavOverlay) not found.');
-      if (!mobileMenuClose) console.error('Mobile Menu Close button (mobileMenuClose) not found.');
-
-      const closeMobileMenu = function() {
-          if (!mobileNavOverlay || !mobileNavOverlay.classList.contains('active')) return;
-          console.log("Closing mobile menu via function");
-          mobileNavOverlay.classList.remove('active');
-          const hideOverlayAfterTransition = () => {
-              if (!mobileNavOverlay.classList.contains('active')) {
-                  mobileNavOverlay.classList.add('d-none');
-              }
-              mobileNavOverlay.removeEventListener('transitionend', hideOverlayAfterTransition);
-          };
-          const overlayTransitionDuration = parseFloat(window.getComputedStyle(mobileNavOverlay).transitionDuration);
-          if (overlayTransitionDuration > 0 && window.getComputedStyle(mobileNavOverlay).transitionProperty.includes('opacity')) {
-              mobileNavOverlay.addEventListener('transitionend', hideOverlayAfterTransition, { once: true });
-          } else {
-              mobileNavOverlay.classList.add('d-none');
-          }
-          if (body) body.style.overflow = '';
-          if (mobileMenuToggle) mobileMenuToggle.setAttribute('aria-expanded', 'false');
-      };
-
-      if (mobileMenuToggle && mobileNavOverlay && mobileMenuClose && body) {
-          mobileMenuToggle.addEventListener('click', function() {
-              console.log("Hamburger toggle clicked");
-              mobileNavOverlay.classList.remove('d-none');
-              void mobileNavOverlay.offsetWidth;
-              mobileNavOverlay.classList.add('active');
-              body.style.overflow = 'hidden';
-              this.setAttribute('aria-expanded', 'true');
-          });
-          mobileMenuClose.addEventListener('click', closeMobileMenu);
-          if (mobileNavOverlay) {
-              const mobileNavLinks = mobileNavOverlay.querySelectorAll('.mobile-nav-link');
-              mobileNavLinks.forEach(link => {
-                  if (!link.classList.contains('disabled') && link.getAttribute('href') && link.getAttribute('href') !== '#') {
-                      link.addEventListener('click', function() { closeMobileMenu(); });
-                  }
-              });
-          }
-      }
-
-      window.addEventListener('resize', function() {
-          if (window.innerWidth >= 768) {
-              if (mobileNavOverlay && mobileNavOverlay.classList.contains('active')) {
-                  console.log("Resized to desktop, automatically closing mobile menu.");
-                  closeMobileMenu();
-              }
-          }
-      });
+    // --- Event Delegation for Language Switcher Clicks ---
+    document.body.addEventListener('click', function(event) {
+        const targetLink = event.target.closest('.dropdown-item[data-lang], .mobile-nav-link[data-lang]');
+        
+        if (targetLink && targetLink.href && targetLink.href !== '#') {
+            event.preventDefault(); 
+            window.location.href = targetLink.href;
+        }
     });
-  </script>
+
+    // --- Active Navigation Link Styling ---
+    const setActiveNavLink = () => {
+        const currentPathname = window.location.pathname;
+        const currentHash = window.location.hash;
+        const baseCurrentPageFilename = getCurrentPageBaseFilename(); 
+
+        document.querySelectorAll('#mainNavbar .nav-link, #mobileNavOverlay .mobile-nav-link').forEach(link => {
+            const linkHref = link.getAttribute('href');
+            let linkBaseFilename = linkHref.includes('/') ? linkHref.substring(linkHref.lastIndexOf('/') + 1).split('#')[0] : linkHref.split('#')[0];
+            const linkHash = linkHref.includes('#') ? '#' + linkHref.split('#')[1] : '';
+
+            let isActive = false;
+
+            if (linkBaseFilename === baseCurrentPageFilename) {
+                if (currentHash) {
+                    if (linkHash && linkHash === currentHash) {
+                        isActive = true;
+                    }
+                } else {
+                    if (!linkHash) {
+                        isActive = true;
+                    }
+                }
+            }
+            
+            const repoName = '/staticWebsiteSCM';
+            if (baseCurrentPageFilename === 'index.html' && 
+                (linkHref === 'index.html' || linkHref === '/' || linkHref === repoName || linkHref === `${repoName}/`)) {
+                isActive = true;
+            }
+
+
+            if (isActive) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    };
+
+    setActiveNavLink();
+
+
+    // --- MOBILE MENU TOGGLE & RESIZE HANDLING ---
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const mobileMenuClose = document.getElementById('mobileMenuClose');
+    const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+    const body = document.body;
+
+    if (!mobileMenuToggle) console.error('Mobile Menu Toggle button (mobileMenuToggle) not found.');
+    if (!mobileNavOverlay) console.error('Mobile Navigation Overlay (mobileNavOverlay) not found.');
+    if (!mobileMenuClose) console.error('Mobile Menu Close button (mobileMenuClose) not found.');
+
+    const closeMobileMenu = function() {
+        if (!mobileNavOverlay || !mobileNavOverlay.classList.contains('active')) return;
+        console.log("Closing mobile menu via function");
+        mobileNavOverlay.classList.remove('active');
+        const hideOverlayAfterTransition = () => {
+            if (!mobileNavOverlay.classList.contains('active')) {
+                mobileNavOverlay.classList.add('d-none');
+            }
+            mobileNavOverlay.removeEventListener('transitionend', hideOverlayAfterTransition);
+        };
+        const overlayTransitionDuration = parseFloat(window.getComputedStyle(mobileNavOverlay).transitionDuration);
+        if (overlayTransitionDuration > 0 && window.getComputedStyle(mobileNavOverlay).transitionProperty.includes('opacity')) {
+            mobileNavOverlay.addEventListener('transitionend', hideOverlayAfterTransition, { once: true });
+        } else {
+            mobileNavOverlay.classList.add('d-none');
+        }
+        if (body) body.style.overflow = '';
+        if (mobileMenuToggle) mobileMenuToggle.setAttribute('aria-expanded', 'false');
+    };
+
+    if (mobileMenuToggle && mobileNavOverlay && mobileMenuClose && body) {
+        mobileMenuToggle.addEventListener('click', function() {
+            console.log("Hamburger toggle clicked");
+            mobileNavOverlay.classList.remove('d-none');
+            void mobileNavOverlay.offsetWidth;
+            mobileNavOverlay.classList.add('active');
+            body.style.overflow = 'hidden';
+            this.setAttribute('aria-expanded', 'true');
+        });
+        mobileMenuClose.addEventListener('click', closeMobileMenu);
+        if (mobileNavOverlay) {
+            const mobileNavLinks = mobileNavOverlay.querySelectorAll('.mobile-nav-link');
+            mobileNavLinks.forEach(link => {
+                if (!link.classList.contains('disabled') && link.getAttribute('href') && link.getAttribute('href') !== '#') {
+                    link.addEventListener('click', function() { closeMobileMenu(); });
+                }
+            });
+        }
+    }
+
+    window.addEventListener('resize', function() {
+        if (window.innerWidth >= 768) {
+            if (mobileNavOverlay && mobileNavOverlay.classList.contains('active')) {
+                console.log("Resized to desktop, automatically closing mobile menu.");
+                closeMobileMenu();
+            }
+        }
+    });
+  });
+</script>
 </body>
 </html>
