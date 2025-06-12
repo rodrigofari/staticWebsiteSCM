@@ -651,174 +651,190 @@
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // --- Script for current year ---
-      const yearSpan = document.getElementById('current-year');
-      if (yearSpan) {
-        yearSpan.textContent = new Date().getFullYear();
-      }
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // --- Script for current year ---
+    const yearSpan = document.getElementById('current-year');
+    if (yearSpan) {
+      yearSpan.textContent = new Date().getFullYear();
+    }
 
-      // Define language configurations (ensure this object is COMPLETE in ALL files)
-      const languages = {
-        'en': { name: 'English', path: '' }, // English is at the root
-        'pl': { name: 'Polski', path: 'pl/' },
-        'it': { name: 'Italiano', path: 'it/' },
-        'de': { name: 'Deutsch', path: 'de/' },
-        'fr': { name: 'Français', path: 'fr/' },
-        'pt': { name: 'Português', path: 'pt/' },
-        'es': { name: 'Español', path: 'es/' },
-        'uk': { name: 'Українська', path: 'uk/' },
-        'fi': { name: 'Suomi', path: 'fi/' },
-        'sv': { name: 'Svenska', path: 'sv/' },
-        'ru': { name: 'Русский', path: 'ru/' }
-      };
+    // Define language configurations (ensure this object is COMPLETE in ALL files)
+    const languages = {
+      'en': { name: 'English', path: '' }, // English is at the root
+      'pl': { name: 'Polski', path: 'pl/' },
+      'it': { name: 'Italiano', path: 'it/' },
+      'de': { name: 'Deutsch', path: 'de/' },
+      'fr': { name: 'Français', path: 'fr/' },
+      'pt': { name: 'Português', path: 'pt/' },
+      'es': { name: 'Español', path: 'es/' },
+      'uk': { name: 'Українська', path: 'uk/' },
+      'fi': { name: 'Suomi', path: 'fi/' },
+      'sv': { name: 'Svenska', path: 'sv/' },
+      'ru': { name: 'Русский', path: 'ru/' }
+    };
 
-      // Function to update language links based on the current page
-      function updateLanguageLinks() {
-          const currentPathname = window.location.pathname;
-          let currentPageFilename = currentPathname.split('/').pop();
+    // Function to update language links' href attributes based on the current page
+    function updateLanguageLinks() {
+        const currentPathname = window.location.pathname;
+        let currentPageFilename = currentPathname.split('/').pop();
 
-          const repoName = '/staticWebsiteSCM'; // CRITICAL: ENSURE THIS EXACTLY MATCHES YOUR REPO NAME WITH A LEADING SLASH
+        const repoName = '/staticWebsiteSCM'; // CRITICAL: ENSURE THIS EXACTLY MATCHES YOUR REPO NAME WITH A LEADING SLASH
 
-          // Adjust currentPageFilename if it's a root or repo-root path (e.g., '/', '/repoName/', '/repoName')
-          if (currentPageFilename === '' || currentPathname.endsWith('/') || currentPathname === repoName || currentPathname === `${repoName}/`) {
-              currentPageFilename = 'index.html';
-          }
-          
-          let siteRootPath = '';
-          if (window.location.origin.includes('github.io') && currentPathname.startsWith(repoName)) {
-              siteRootPath = repoName;
-          }
+        // Adjust currentPageFilename if it's a root or repo-root path (e.g., '/', '/repoName/', '/repoName')
+        if (currentPageFilename === '' || currentPathname.endsWith('/') || currentPathname === repoName || currentPathname === `${repoName}/`) {
+            currentPageFilename = 'index.html';
+        }
+        
+        let siteRootPath = '';
+        if (window.location.origin.includes('github.io') && currentPathname.startsWith(repoName)) {
+            siteRootPath = repoName;
+        }
 
-          document.querySelectorAll('.dropdown-item[data-lang], .mobile-nav-link[data-lang]').forEach(link => {
-              const targetLangCode = link.getAttribute('data-lang');
-              if (!targetLangCode) return;
+        document.querySelectorAll('.dropdown-item[data-lang], .mobile-nav-link[data-lang]').forEach(link => {
+            const targetLangCode = link.getAttribute('data-lang');
+            if (!targetLangCode) return;
 
-              const langConfig = languages[targetLangCode];
-              if (!langConfig) return;
+            const langConfig = languages[targetLangCode];
+            if (!langConfig) return;
 
-              let newPath = `${siteRootPath}/${langConfig.path}${currentPageFilename}`;
-              link.href = `${window.location.origin}${newPath.replace(/\/\/+/g, '/')}`; // Ensure absolute URL and clean double slashes
-          });
-      }
+            let newPath = `${siteRootPath}/${langConfig.path}${currentPageFilename}`;
+            link.href = `${window.location.origin}${newPath.replace(/\/\/+/g, '/')}`; // Ensure absolute URL and clean double slashes
+        });
+    }
 
-      // Call the function on DOMContentLoaded to set initial links for language switcher
-      updateLanguageLinks();
-
-
-      // --- SCRIPT FOR DESKTOP and MOBILE active nav link ---
-      // This part ensures the navigation links get the 'active' class
-      const currentFullUrlPathForNav = window.location.pathname; 
-      const currentHashForNav = window.location.hash; 
-
-      const getBaseFilenameForNav = (urlPath) => {
-          const parts = urlPath.split('/').filter(s => s !== ''); 
-          let filename = parts.pop(); 
-          const repoName = '/staticWebsiteSCM';
-
-          // Check if it's a language subdirectory
-          if (Object.keys(languages).some(langCode => languages[langCode].path === `${filename}/`)) {
-              return 'index.html'; 
-          }
-          // Check for root URL or repo root
-          if (!filename && (urlPath === '/' || urlPath === repoName || urlPath === `${repoName}/`)) {
-              return 'index.html';
-          }
-          return filename || 'index.html'; 
-      };
-
-      const baseCurrentPageFilenameForNav = getBaseFilenameForNav(currentFullUrlPathForNav);
-
-      document.querySelectorAll('#mainNavbar .nav-link, #mobileNavOverlay .mobile-nav-link').forEach(link => {
-          const linkHref = link.getAttribute('href');
-          const linkBaseFilename = getBaseFilenameForNav(linkHref.split('#')[0]);
-          const linkHash = linkHref.includes('#') ? '#' + linkHref.split('#')[1] : '';
-
-          let isActive = false;
-
-          if (linkBaseFilename === baseCurrentPageFilenameForNav) {
-              if (currentHashForNav) {
-                  if (linkHash && linkHash === currentHashForNav) {
-                      isActive = true;
-                  }
-              } else {
-                  if (!linkHash) {
-                      isActive = true;
-                  }
-              }
-          }
-
-          if (isActive) {
-              link.classList.add('active');
-          } else {
-              link.classList.remove('active');
-          }
-      });
+    // Call this function once on DOMContentLoaded to set initial links
+    updateLanguageLinks();
 
 
-      // --- SCRIPT FOR MOBILE MENU TOGGLE & RESIZE HANDLING ---
-      const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-      const mobileMenuClose = document.getElementById('mobileMenuClose');
-      const mobileNavOverlay = document.getElementById('mobileNavOverlay');
-      const body = document.body;
-
-      if (!mobileMenuToggle) console.error('Mobile Menu Toggle button (mobileMenuToggle) not found.');
-      if (!mobileNavOverlay) console.error('Mobile Navigation Overlay (mobileNavOverlay) not found.');
-      if (!mobileMenuClose) console.error('Mobile Menu Close button (mobileMenuClose) not found.');
-
-      const closeMobileMenu = function() {
-          if (!mobileNavOverlay || !mobileNavOverlay.classList.contains('active')) return;
-          console.log("Closing mobile menu via function");
-          mobileNavOverlay.classList.remove('active');
-          const hideOverlayAfterTransition = () => {
-              if (!mobileNavOverlay.classList.contains('active')) {
-                  mobileNavOverlay.classList.add('d-none');
-              }
-              mobileNavOverlay.removeEventListener('transitionend', hideOverlayAfterTransition);
-          };
-          const overlayTransitionDuration = parseFloat(window.getComputedStyle(mobileNavOverlay).transitionDuration);
-          if (overlayTransitionDuration > 0 && window.getComputedStyle(mobileNavOverlay).transitionProperty.includes('opacity')) {
-              mobileNavOverlay.addEventListener('transitionend', hideOverlayAfterTransition, { once: true });
-          } else {
-              mobileNavOverlay.classList.add('d-none');
-          }
-          if (body) body.style.overflow = '';
-          if (mobileMenuToggle) mobileMenuToggle.setAttribute('aria-expanded', 'false');
-      };
-
-      if (mobileMenuToggle && mobileNavOverlay && mobileMenuClose && body) {
-          mobileMenuToggle.addEventListener('click', function() {
-              console.log("Hamburger toggle clicked");
-              mobileNavOverlay.classList.remove('d-none');
-              void mobileNavOverlay.offsetWidth;
-              mobileNavOverlay.classList.add('active');
-              body.style.overflow = 'hidden';
-              this.setAttribute('aria-expanded', 'true');
-          });
-          mobileMenuClose.addEventListener('click', closeMobileMenu);
-          if (mobileNavOverlay) {
-              const mobileNavLinks = mobileNavOverlay.querySelectorAll('.mobile-nav-link');
-              mobileNavLinks.forEach(link => {
-                  // Check if the link is not disabled and has a valid href that isn't just '#'
-                  if (!link.classList.contains('disabled') && link.getAttribute('href') && link.getAttribute('href') !== '#') {
-                      link.addEventListener('click', function() { closeMobileMenu(); });
-                  }
-              });
-          }
-      }
-
-      window.addEventListener('resize', function() {
-          if (window.innerWidth >= 768) {
-              if (mobileNavOverlay && mobileNavOverlay.classList.contains('active')) {
-                  console.log("Resized to desktop, automatically closing mobile menu.");
-                  closeMobileMenu();
-              }
-          }
-      });
+    // --- Event Delegation for Language Switcher Clicks ---
+    // Instead of adding listeners to each item, we add one to the body.
+    // This handles dynamically loaded content and ensures clickability.
+    document.body.addEventListener('click', function(event) {
+        // Check if the clicked element or any of its parents has a 'data-lang' attribute
+        let targetLink = event.target.closest('.dropdown-item[data-lang], .mobile-nav-link[data-lang]');
+        
+        if (targetLink && targetLink.href && targetLink.href !== '#') {
+            // Prevent default link behavior, as we handle navigation manually
+            event.preventDefault(); 
+            // Navigate to the URL generated by updateLanguageLinks
+            window.location.href = targetLink.href;
+        }
     });
-  </script>
+
+
+    // --- SCRIPT FOR DESKTOP and MOBILE active nav link ---
+    // This part ensures the navigation links get the 'active' class
+    const currentFullUrlPathForNav = window.location.pathname; 
+    const currentHashForNav = window.location.hash; 
+
+    const getBaseFilenameForNav = (urlPath) => {
+        const parts = urlPath.split('/').filter(s => s !== ''); 
+        let filename = parts.pop(); 
+        const repoName = '/staticWebsiteSCM';
+
+        // Check if it's a language subdirectory
+        if (Object.keys(languages).some(langCode => languages[langCode].path === `${filename}/`)) {
+            return 'index.html'; 
+        }
+        // Check for root URL or repo root
+        if (!filename && (urlPath === '/' || urlPath === repoName || urlPath === `${repoName}/`)) {
+            return 'index.html';
+        }
+        return filename || 'index.html'; 
+    };
+
+    const baseCurrentPageFilenameForNav = getBaseFilenameForNav(currentFullUrlPathForNav);
+
+    document.querySelectorAll('#mainNavbar .nav-link, #mobileNavOverlay .mobile-nav-link').forEach(link => {
+        const linkHref = link.getAttribute('href');
+        const linkBaseFilename = getBaseFilenameForNav(linkHref.split('#')[0]);
+        const linkHash = linkHref.includes('#') ? '#' + linkHref.split('#')[1] : '';
+
+        let isActive = false;
+
+        if (linkBaseFilename === baseCurrentPageFilenameForNav) {
+            if (currentHashForNav) {
+                if (linkHash && linkHash === currentHashForNav) {
+                    isActive = true;
+                }
+            } else {
+                if (!linkHash) {
+                    isActive = true;
+                }
+            }
+        }
+
+        if (isActive) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
+
+
+    // --- SCRIPT FOR MOBILE MENU TOGGLE & RESIZE HANDLING ---
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const mobileMenuClose = document.getElementById('mobileMenuClose');
+    const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+    const body = document.body;
+
+    if (!mobileMenuToggle) console.error('Mobile Menu Toggle button (mobileMenuToggle) not found.');
+    if (!mobileNavOverlay) console.error('Mobile Navigation Overlay (mobileNavOverlay) not found.');
+    if (!mobileMenuClose) console.error('Mobile Menu Close button (mobileMenuClose) not found.');
+
+    const closeMobileMenu = function() {
+        if (!mobileNavOverlay || !mobileNavOverlay.classList.contains('active')) return;
+        console.log("Closing mobile menu via function");
+        mobileNavOverlay.classList.remove('active');
+        const hideOverlayAfterTransition = () => {
+            if (!mobileNavOverlay.classList.contains('active')) {
+                mobileNavOverlay.classList.add('d-none');
+            }
+            mobileNavOverlay.removeEventListener('transitionend', hideOverlayAfterTransition);
+        };
+        const overlayTransitionDuration = parseFloat(window.getComputedStyle(mobileNavOverlay).transitionDuration);
+        if (overlayTransitionDuration > 0 && window.getComputedStyle(mobileNavOverlay).transitionProperty.includes('opacity')) {
+            mobileNavOverlay.addEventListener('transitionend', hideOverlayAfterTransition, { once: true });
+        } else {
+            mobileNavOverlay.classList.add('d-none');
+        }
+        if (body) body.style.overflow = '';
+        if (mobileMenuToggle) mobileMenuToggle.setAttribute('aria-expanded', 'false');
+    };
+
+    if (mobileMenuToggle && mobileNavOverlay && mobileMenuClose && body) {
+        mobileMenuToggle.addEventListener('click', function() {
+            console.log("Hamburger toggle clicked");
+            mobileNavOverlay.classList.remove('d-none');
+            void mobileNavOverlay.offsetWidth;
+            mobileNavOverlay.classList.add('active');
+            body.style.overflow = 'hidden';
+            this.setAttribute('aria-expanded', 'true');
+        });
+        mobileMenuClose.addEventListener('click', closeMobileMenu);
+        if (mobileNavOverlay) {
+            const mobileNavLinks = mobileNavOverlay.querySelectorAll('.mobile-nav-link');
+            mobileNavLinks.forEach(link => {
+                // Check if the link is not disabled and has a valid href that isn't just '#'
+                if (!link.classList.contains('disabled') && link.getAttribute('href') && link.getAttribute('href') !== '#') {
+                    link.addEventListener('click', function() { closeMobileMenu(); });
+                }
+            });
+        }
+    }
+
+    window.addEventListener('resize', function() {
+        if (window.innerWidth >= 768) {
+            if (mobileNavOverlay && mobileNavOverlay.classList.contains('active')) {
+                console.log("Resized to desktop, automatically closing mobile menu.");
+                closeMobileMenu();
+            }
+        }
+    });
+  });
+</script>
 </body>
 </html>
