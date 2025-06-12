@@ -682,106 +682,118 @@
       'ru': { name: 'Русский', path: 'ru/' }
     };
 
-    // Function to update language links' href attributes based on the current page
-    function updateLanguageLinks() {
+    // Function to calculate the correct base filename for the current page
+    const getCurrentPageBaseFilename = () => {
         const currentPathname = window.location.pathname;
-        let currentPageFilename = currentPathname.split('/').pop();
+        const repoName = '/staticWebsiteSCM';
+        let filename = '';
 
-        const repoName = '/staticWebsiteSCM'; // CRITICAL: ENSURE THIS EXACTLY MATCHES YOUR REPO NAME WITH A LEADING SLASH
+        // Determine if we are at the root or in a language subdirectory
+        let pathParts = currentPathname.split('/').filter(part => part !== ''); // Remove empty strings from split
 
-        // Adjust currentPageFilename if it's a root or repo-root path (e.g., '/', '/repoName/', '/repoName')
-        if (currentPageFilename === '' || currentPathname.endsWith('/') || currentPathname === repoName || currentPathname === `${repoName}/`) {
-            currentPageFilename = 'index.html';
+        // If the site is hosted at the root of github.io/repo-name/
+        if (window.location.origin.includes('github.io') && pathParts[0] === 'staticWebsiteSCM') {
+            // Remove the repo name from the parts if it's the first element
+            pathParts.shift(); 
         }
-        
+
+        if (pathParts.length === 0 || pathParts[pathParts.length - 1].includes('.')) {
+            // If pathParts is empty (meaning / or /repo-name/), or last part contains a '.' (it's a filename)
+            filename = pathParts.length === 0 ? 'index.html' : pathParts[pathParts.length - 1];
+        } else {
+            // If the last part is a directory (e.g., /pl), assume index.html
+            filename = 'index.html';
+        }
+
+        return filename;
+    };
+
+    // --- Language Switcher Functionality ---
+    const updateLanguageLinks = () => {
+        const baseFilename = getCurrentPageBaseFilename(); // Get the current page's actual filename (e.g., index.html, lessons.html)
+        const repoName = '/staticWebsiteSCM'; // Define the repository name (MUST match your GitHub repo name)
         let siteRootPath = '';
-        if (window.location.origin.includes('github.io') && currentPathname.startsWith(repoName)) {
+
+        // If running on GitHub Pages and within the repository path
+        if (window.location.origin.includes('github.io') && window.location.pathname.startsWith(repoName)) {
             siteRootPath = repoName;
         }
 
-        document.querySelectorAll('.dropdown-item[data-lang], .mobile-nav-link[data-lang]').forEach(link => {
-            const targetLangCode = link.getAttribute('data-lang');
-            if (!targetLangCode) return;
-
+        document.querySelectorAll('.dropdown-item[data-lang], .mobile-nav-link[data-lang]').forEach(linkElement => {
+            const targetLangCode = linkElement.getAttribute('data-lang');
             const langConfig = languages[targetLangCode];
-            if (!langConfig) return;
 
-            let newPath = `${siteRootPath}/${langConfig.path}${currentPageFilename}`;
-            link.href = `${window.location.origin}${newPath.replace(/\/\/+/g, '/')}`; // Ensure absolute URL and clean double slashes
+            if (langConfig) {
+                // Construct the target URL: Origin + RepoPath + LangPath + BaseFilename
+                let targetUrl = `${window.location.origin}${siteRootPath}/${langConfig.path}${baseFilename}`;
+                // Clean up any double slashes from the path part
+                linkElement.href = targetUrl.replace(/\/\/+/g, '/');
+            }
         });
-    }
+    };
 
-    // Call this function once on DOMContentLoaded to set initial links
+    // Initialize language links on page load
     updateLanguageLinks();
 
-
     // --- Event Delegation for Language Switcher Clicks ---
-    // Instead of adding listeners to each item, we add one to the body.
-    // This handles dynamically loaded content and ensures clickability.
+    // This listener is attached to the body and will catch clicks on any language link,
+    // even if they are dynamically added or re-rendered by Bootstrap's dropdowns.
     document.body.addEventListener('click', function(event) {
-        // Check if the clicked element or any of its parents has a 'data-lang' attribute
-        let targetLink = event.target.closest('.dropdown-item[data-lang], .mobile-nav-link[data-lang]');
-        
+        // Find the closest parent that is a language-switching link
+        const targetLink = event.target.closest('.dropdown-item[data-lang], .mobile-nav-link[data-lang]');
+
         if (targetLink && targetLink.href && targetLink.href !== '#') {
-            // Prevent default link behavior, as we handle navigation manually
-            event.preventDefault(); 
-            // Navigate to the URL generated by updateLanguageLinks
+            // Prevent default browser navigation which might be inconsistent
+            event.preventDefault();
+            // Perform the navigation manually
             window.location.href = targetLink.href;
         }
     });
 
+    // --- Active Navigation Link Styling ---
+    const setActiveNavLink = () => {
+        const currentPathname = window.location.pathname;
+        const currentHash = window.location.hash;
+        const baseCurrentPageFilename = getCurrentPageBaseFilename(); // Use the robust filename getter
 
-    // --- SCRIPT FOR DESKTOP and MOBILE active nav link ---
-    // This part ensures the navigation links get the 'active' class
-    const currentFullUrlPathForNav = window.location.pathname; 
-    const currentHashForNav = window.location.hash; 
+        document.querySelectorAll('#mainNavbar .nav-link, #mobileNavOverlay .mobile-nav-link').forEach(link => {
+            const linkHref = link.getAttribute('href');
+            const linkBaseFilename = linkHref.includes('/') ? linkHref.substring(linkHref.lastIndexOf('/') + 1).split('#')[0] : linkHref.split('#')[0]; // Extract filename from link href, ignoring path and hash
+            const linkHash = linkHref.includes('#') ? '#' + linkHref.split('#')[1] : '';
 
-    const getBaseFilenameForNav = (urlPath) => {
-        const parts = urlPath.split('/').filter(s => s !== ''); 
-        let filename = parts.pop(); 
-        const repoName = '/staticWebsiteSCM';
+            let isActive = false;
 
-        // Check if it's a language subdirectory
-        if (Object.keys(languages).some(langCode => languages[langCode].path === `${filename}/`)) {
-            return 'index.html'; 
-        }
-        // Check for root URL or repo root
-        if (!filename && (urlPath === '/' || urlPath === repoName || urlPath === `${repoName}/`)) {
-            return 'index.html';
-        }
-        return filename || 'index.html'; 
-    };
-
-    const baseCurrentPageFilenameForNav = getBaseFilenameForNav(currentFullUrlPathForNav);
-
-    document.querySelectorAll('#mainNavbar .nav-link, #mobileNavOverlay .mobile-nav-link').forEach(link => {
-        const linkHref = link.getAttribute('href');
-        const linkBaseFilename = getBaseFilenameForNav(linkHref.split('#')[0]);
-        const linkHash = linkHref.includes('#') ? '#' + linkHref.split('#')[1] : '';
-
-        let isActive = false;
-
-        if (linkBaseFilename === baseCurrentPageFilenameForNav) {
-            if (currentHashForNav) {
-                if (linkHash && linkHash === currentHashForNav) {
-                    isActive = true;
-                }
-            } else {
-                if (!linkHash) {
-                    isActive = true;
+            if (linkBaseFilename === baseCurrentPageFilename) {
+                if (currentHash) { // If current URL has a hash
+                    if (linkHash && linkHash === currentHash) { // Match only if link's hash also matches
+                        isActive = true;
+                    }
+                } else { // If current URL does not have a hash
+                    if (!linkHash) { // Match only if link also has no hash
+                        isActive = true;
+                    }
                 }
             }
-        }
-
-        if (isActive) {
-            link.classList.add('active');
-        } else {
-            link.classList.remove('active');
-        }
-    });
+            
+            // Special handling for the 'Home' link if it links to 'index.html'
+            if (baseCurrentPageFilename === 'index.html' && (linkHref === 'index.html' || linkHref === '' || linkHref === '/')) {
+                isActive = true;
+            }
 
 
-    // --- SCRIPT FOR MOBILE MENU TOGGLE & RESIZE HANDLING ---
+            if (isActive) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    };
+
+    // Call active nav link styling on page load
+    setActiveNavLink();
+
+
+    // --- MOBILE MENU TOGGLE & RESIZE HANDLING ---
     const mobileMenuToggle = document.getElementById('mobileMenuToggle');
     const mobileMenuClose = document.getElementById('mobileMenuClose');
     const mobileNavOverlay = document.getElementById('mobileNavOverlay');
