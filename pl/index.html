@@ -718,8 +718,15 @@
             const langConfig = languages[targetLangCode];
 
             if (langConfig) {
-                // Construct the target URL: Origin + RepoPath + LangPath + BaseFilename
-                let targetUrl = `${window.location.origin}${siteRootPath}/${langConfig.path}${baseFilename}`;
+                let targetUrl;
+                if (langConfig.path === '') { // This is the English (root) page
+                    // Construct the URL directly to the repository's root for English
+                    targetUrl = `${window.location.origin}${siteRootPath}/${baseFilename}`;
+                } else {
+                    // For other languages, use the language subdirectory
+                    targetUrl = `${window.location.origin}${siteRootPath}/${langConfig.path}${baseFilename}`;
+                }
+                
                 // Clean up any double slashes from the path part
                 linkElement.href = targetUrl.replace(/\/\/+/g, '/');
             }
@@ -735,7 +742,7 @@
     document.body.addEventListener('click', function(event) {
         // Find the closest parent that is a language-switching link
         const targetLink = event.target.closest('.dropdown-item[data-lang], .mobile-nav-link[data-lang]');
-
+        
         if (targetLink && targetLink.href && targetLink.href !== '#') {
             // Prevent default browser navigation which might be inconsistent
             event.preventDefault();
@@ -752,7 +759,8 @@
 
         document.querySelectorAll('#mainNavbar .nav-link, #mobileNavOverlay .mobile-nav-link').forEach(link => {
             const linkHref = link.getAttribute('href');
-            const linkBaseFilename = linkHref.includes('/') ? linkHref.substring(linkHref.lastIndexOf('/') + 1).split('#')[0] : linkHref.split('#')[0]; // Extract filename from link href, ignoring path and hash
+            // Extract filename from link href. Split by '#' first to isolate the path, then get the last part.
+            let linkBaseFilename = linkHref.includes('/') ? linkHref.substring(linkHref.lastIndexOf('/') + 1).split('#')[0] : linkHref.split('#')[0];
             const linkHash = linkHref.includes('#') ? '#' + linkHref.split('#')[1] : '';
 
             let isActive = false;
@@ -770,7 +778,10 @@
             }
             
             // Special handling for the 'Home' link if it links to 'index.html'
-            if (baseCurrentPageFilename === 'index.html' && (linkHref === 'index.html' || linkHref === '' || linkHref === '/')) {
+            // This ensures the "Home" link is active when on the site root or /index.html
+            const repoName = '/staticWebsiteSCM';
+            if (baseCurrentPageFilename === 'index.html' && 
+                (linkHref === 'index.html' || linkHref === '/' || linkHref === repoName || linkHref === `${repoName}/`)) {
                 isActive = true;
             }
 
@@ -787,7 +798,7 @@
     setActiveNavLink();
 
 
-    // --- MOBILE MENU TOGGLE & RESIZE HANDLING ---
+    // --- SCRIPT FOR MOBILE MENU TOGGLE & RESIZE HANDLING ---
     const mobileMenuToggle = document.getElementById('mobileMenuToggle');
     const mobileMenuClose = document.getElementById('mobileMenuClose');
     const mobileNavOverlay = document.getElementById('mobileNavOverlay');
