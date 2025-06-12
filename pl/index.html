@@ -89,8 +89,7 @@
       </div>
 
       <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0 flex-grow-1">
-        <li><a href="index.html" class="nav-link px-2">Strona główna</a></li> 
-        <li><a href="lessons.html" class="nav-link px-2">Lekcje</a></li>
+        <li><a href="index.html" class="nav-link px-2">Strona główna</a></li> <li><a href="lessons.html" class="nav-link px-2">Lekcje</a></li>
         <li><a href="discover_madeira.html" class="nav-link px-2">Odkryj Maderę</a></li>
         <li><a href="index.html#FAQs" class="nav-link px-2">FAQ</a></li>
         <li><a href="about_us.html" class="nav-link px-2">O nas</a></li>
@@ -781,7 +780,7 @@
           <span class="surf-feature-text">Dostępny transport</span>
         </div>
       </div>
-      <a class="surf-book-link" href="mailto:surfclubedamadeira@gmail.com?subject=Inquiry%20about%20Team%20Building%20Surf%20Lesson">
+      <a class="surf-book-link" href="mailto:surfclubedamadeira@gmail.com?subject=Zapytanie%20dotycz%C4%85ce%20lekcji%20surfingu%20dla%20budowania%20zespo%C5%82u">
         <button class="surf-book-button">
           <span class="surf-button-text">Wyślij nam e-mail, aby porozmawiać</span>
           <div class="surf-button-shine"></div>
@@ -892,15 +891,17 @@
             pathParts.shift(); 
         }
 
-        // --- CORRECTED LOGIC FOR getCurrentPageBaseFilename ---
-        // If pathParts is empty (meaning / or /repo-name/), or last part contains a '.' (it's a filename)
+        // --- CORRECTED LOGIC FOR getCurrentPageBaseFilename in lessons.html ---
+        // If pathParts is empty (meaning / or /repo-name/), it should be index.html.
+        // If it contains a filename (e.g., lessons.html), use that.
+        // If it's a directory (e.g., /pl), and no filename is specified, assume lessons.html in that context.
         if (pathParts.length === 0) {
-            filename = 'index.html'; // Default to index.html for root URLs
+            filename = 'index.html'; // Default for root URL (e.g., if navigated to lessons.html directly from root of the site)
         } else if (pathParts[pathParts.length - 1].includes('.')) {
-            filename = pathParts[pathParts.length - 1]; // It's a file, e.g., "lessons.html"
+            filename = pathParts[pathParts.length - 1]; // Use the actual filename (e.g., lessons.html)
         } else {
-            // It's a directory (e.g., /pl), assume index.html within that directory
-            filename = 'index.html'; // This handles /pl/ correctly
+            // This is the case for /pl/ or /de/ etc., where the current page filename is assumed to be lessons.html
+            filename = 'lessons.html'; // Default for language subdirectory pages (e.g., pl/lessons.html)
         }
 
         return filename;
@@ -937,7 +938,14 @@
 
     // --- Event Delegation for Language Switcher Clicks ---
     document.body.addEventListener('click', function(event) {
-        const targetLink = event.target.closest('.dropdown-item[data-lang], .mobile-nav-link[data-lang]');
+        const targetElement = event.target;
+        // Check for clicks on the dropdown toggle buttons for language selection
+        if (targetElement.closest('#languageDropdown') || targetElement.closest('#mobileLanguageDropdown')) {
+            // Allow Bootstrap's dropdown JS to handle the toggle
+            return; 
+        }
+
+        const targetLink = targetElement.closest('.dropdown-item[data-lang], .mobile-nav-link[data-lang]');
         
         if (targetLink && targetLink.href && targetLink.href !== '#') {
             event.preventDefault(); 
@@ -953,7 +961,6 @@
 
         document.querySelectorAll('#mainNavbar .nav-link, #mobileNavOverlay .mobile-nav-link').forEach(link => {
             const linkHref = link.getAttribute('href');
-            // Extract filename from link href. Split by '#' first to isolate the path, then get the last part.
             let linkBaseFilename = linkHref.includes('/') ? linkHref.substring(linkHref.lastIndexOf('/') + 1).split('#')[0] : linkHref.split('#')[0];
             const linkHash = linkHref.includes('#') ? '#' + linkHref.split('#')[1] : '';
 
@@ -972,8 +979,16 @@
             }
             
             const repoName = '/staticWebsiteSCM';
-            if (baseCurrentPageFilename === 'index.html' && 
+            // Special handling for the 'Home' link if it links to 'index.html'
+            if (linkBaseFilename === 'index.html' && 
                 (linkHref === 'index.html' || linkHref === '/' || linkHref === repoName || linkHref === `${repoName}/`)) {
+                isActive = (baseCurrentPageFilename === 'index.html'); // Only activate if current page is also index.html
+            }
+            // Special handling for lessons.html#ohana-surf-camp
+            if (baseCurrentPageFilename === 'lessons.html' && linkBaseFilename === 'lessons.html' && linkHash === '#ohana-surf-camp' && currentHash === '#ohana-surf-camp') {
+                isActive = true;
+            } else if (baseCurrentPageFilename === 'lessons.html' && linkBaseFilename === 'lessons.html' && !linkHash && !currentHash) {
+                // Activate lessons.html link if on lessons.html and no hash is present (or both have no hash)
                 isActive = true;
             }
 
