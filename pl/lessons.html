@@ -163,7 +163,7 @@
     "@type": "Service",
     "name": "Pakiet lekcji surfingu (5 lekcji)",
     "serviceType": "Pakiet Lekcji Surfingu",
-    "description": "Zaangażuj się w swoją podróż surfingową dzięki naszemu pakietowi 5 lekcji na Maderze, oferującemu zniżkową stawkę dla tych, którzy chcą konsekwentnie postępować. Zawiera cały sprzęt i opcjonalny transport, prowadząc Cię do opanowania fal z naszym zespołem ekspertów.",
+    "description": "Zaangażuj się w swoją podróż surfingową dzięki naszemu pakietowi 5 lekcji ze zniżką. Zaprojektowany dla ciągłego postępu, ten pakiet zawiera cały sprzęt i opcjonalny transport, prowadząc Cię do opanowania fal z naszym zespołem ekspertów.",
     "provider": {
       "@type": "LocalBusiness",
       "name": "Surf Clube da Madeira",
@@ -379,17 +379,25 @@
       </ul>
 
       <div class="col-md-3 text-end">
-        <style> /* Inline styles for the Bokun button */
-          #bokun_771c5662_5648_44cb_b014_0e61061d172f {
-            display: inline-block; padding: 10px 20px; background: #65eade; border-radius: 5px;
-            box-shadow: 0 8px 12px rgba(0,0,0,0.19); font-weight: 600; font-size: 16px;
-            text-decoration: none; text-align: center; color: #FFFFFF; border:none; cursor: pointer;
-            transition: background .2s ease;
-          }
-          #bokun_771c5662_5648_44cb_b014_0e61061d172f:hover{ background: #22e1d0; }
-          #bokun_771c5662_5648_44cb_b014_0e61061d172f:active{ background: #38e4d4; }
-        </style>
-        <button class="bokunButton" id="bokun_771c5662_5648_44cb_b014_0e61061d172f" data-src="https://widgets.bokun.io/online-sales/e0ccac86-bc58-4284-aba6-362a4e494143/product-list/87014?partialView=1"> Zarezerwuj teraz </button>
+        <div class="dropdown d-inline-block me-3">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-globe"></i>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+                <li><a class="dropdown-item" href="#" data-lang="en">English</a></li>
+                <li><a class="dropdown-item" href="#" data-lang="pl">Polski</a></li>
+                <li><a class="dropdown-item" href="#" data-lang="it">Italiano</a></li>
+                <li><a class="dropdown-item" href="#" data-lang="de">Deutsch</a></li>
+                <li><a class="dropdown-item" href="#" data-lang="fr">Français</a></li>
+                <li><a class="dropdown-item" href="#" data-lang="pt">Português</a></li>
+                <li><a class="dropdown-item" href="#" data-lang="es">Español</a></li>
+                <li><a class="dropdown-item" href="#" data-lang="uk">Українська</a></li>
+                <li><a class="dropdown-item" href="#" data-lang="fi">Suomi</a></li>
+                <li><a class="dropdown-item" href="#" data-lang="sv">Svenska</a></li>
+                <li><a class="dropdown-item" href="#" data-lang="ru">Русский</a></li>
+            </ul>
+        </div>
+        <button class="bokunButton" id="bokun_771c5662_5648_44cb_b014_0e61061d172f" data-src="https://widgets.bokun.io/online-sales/e0ccac86-bc58-4284-aba6-362a4e494143/product-list/87014?partialView=1" data-testid="widget-book-button"> Zarezerwuj teraz </button>
       </div>
     </header>
   </div>
@@ -399,6 +407,24 @@
           <img src="/staticWebsiteSCM/img/logos/SCM_logo_no background.png" alt="Logo Surf Clube da Madeira" style="height: 40px;">
       </a>
       <div class="d-flex align-items-center">
+          <div class="dropdown d-inline-block me-2">
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="mobileLanguageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-globe"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="mobileLanguageDropdown">
+                <li><a class="dropdown-item" href="#" data-lang="en">English</a></li>
+                <li><a class="dropdown-item" href="#" data-lang="pl">Polski</a></li>
+                <li><a class="dropdown-item" href="#" data-lang="it">Italiano</a></li>
+                <li><a class="dropdown-item" href="#" data-lang="de">Deutsch</a></li>
+                <li><a class="dropdown-item" href="#" data-lang="fr">Français</a></li>
+                <li><a class="dropdown-item" href="#" data-lang="pt">Português</a></li>
+                <li><a class="dropdown-item" href="#" data-lang="es">Español</a></li>
+                <li><a class="dropdown-item" href="#" data-lang="uk">Українська</a></li>
+                <li><a class="dropdown-item" href="#" data-lang="fi">Suomi</a></li>
+                <li><a class="dropdown-item" href="#" data-lang="sv">Svenska</a></li>
+                <li><a class="dropdown-item" href="#" data-lang="ru">Русский</a></li>
+            </ul>
+          </div>
           <button type="button" class="bokunButton btn btn-sm text-white me-2"
                   style="background-color: var(--nav-link-hover-color); border-color: var(--nav-link-hover-color);"
                   data-src="https://widgets.bokun.io/online-sales/e0ccac86-bc58-4284-aba6-362a4e494143/product-list/87014?partialView=1"
@@ -435,7 +461,7 @@
                     <a class="mobile-nav-link" href="#" data-lang="uk">Українська</a>
                     <a class="mobile-nav-link" href="#" data-lang="fi">Suomi</a>
                     <a class="mobile-nav-link" href="#" data-lang="sv">Svenska</a>
-                    <a class="mobile-nav-link" href="#" data-lang="ru">Руский</a>
+                    <a class="mobile-nav-link" href="#" data-lang="ru">Русский</a>
                 </li>
             </ul>
         </nav>
@@ -1053,7 +1079,7 @@
       <div class="row text-center text-md-start align-items-start">
         <div class="col-md-3 mb-4 mb-md-0">
           <h3>Surf Clube da Madeira</h3>
-          <p>Mamy ponad 20 lat doświadczenia w nauczaniu surfingu i chcemy dzielić się tym stylem życia z Tobą, Twoją rodziną i przyjaciółmi!</p>
+          <p>Mamy ponad 20 lat doświadczenia w nauczaniu surfingu i chcemy dzielić się tym stylem życia z Tobą, Twoją rodziną i przyjaciółmi na pięknej Maderze!</p>
           <div class="footer-social mt-3">
             <a href="https://www.instagram.com/surfclubedamadeira/" target="_blank" rel="noopener noreferrer" class="me-2"><i class="bi bi-instagram"></i><span class="visually-hidden">Instagram</span></a>
             <a href="https://www.facebook.com/p/Surf-Clube-da-Madeira-100063827790722/" target="_blank" rel="noopener noreferrer" class="me-2"><i class="bi bi-facebook"></i><span class="visually-hidden">Facebook</span></a>
@@ -1152,7 +1178,7 @@
         if (pathParts.length === 0 || pathParts[pathParts.length - 1].includes('.')) {
             filename = pathParts.length === 0 ? 'index.html' : pathParts[pathParts.length - 1];
         } else {
-            filename = 'index.html';
+            filename = 'lessons.html'; // <<< MODIFIED: Assume lessons.html if no explicit filename
         }
 
         return filename;
