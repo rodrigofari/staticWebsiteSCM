@@ -82,13 +82,16 @@
   </head>
 
 <body>
-  <div class="container d-none d-xl-block"> <header id="mainNavbar" class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4">
-      <div class="col-md-2 mb-2 mb-md-0 d-flex justify-content-start align-items-center"> <a href="index.html" class="d-inline-flex link-body-emphasis text-decoration-none">
+  <div class="container d-none d-xl-block">
+    <header id="mainNavbar" class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4">
+      <div class="col-md-2 mb-2 mb-md-0 d-flex justify-content-start align-items-center">
+        <a href="index.html" class="d-inline-flex link-body-emphasis text-decoration-none">
           <img class="logo" src="./img/logos/SCM_logo_no background.png" alt="Surf Clube da Madeira logo" height="80">
         </a>
       </div>
 
-      <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0 flex-grow-1"> <li><a href="index.html" class="nav-link px-2">Home</a></li>
+      <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0 flex-grow-1">
+        <li><a href="index.html" class="nav-link px-2">Home</a></li>
         <li><a href="lessons.html" class="nav-link px-2">Lessons</a></li>
         <li><a href="discover_madeira.html" class="nav-link px-2">Discover Madeira</a></li>
         <li><a href="index.html#FAQs" class="nav-link px-2">FAQs</a></li>
@@ -97,9 +100,11 @@
         <li><a href="contact.html" class="nav-link px-2">Contact</a></li>
       </ul>
 
-      <div class="col-md-3 text-end d-flex justify-content-end align-items-center"> <div class="dropdown d-inline-block me-3">
+      <div class="col-md-3 text-end d-flex justify-content-end align-items-center">
+        <div class="dropdown d-inline-block me-3">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-globe"></i> </button>
+                <i class="bi bi-globe"></i>
+            </button>
             <ul class="dropdown-menu" aria-labelledby="languageDropdown">
                 <li><a class="dropdown-item" href="#" data-lang="en">English</a></li>
                 <li><a class="dropdown-item" href="#" data-lang="pl">Polski</a></li>
@@ -119,7 +124,8 @@
     </header>
   </div>
 
-  <header id="mainNavbarMobile" class="d-xl-none fixed-top bg-white shadow-sm"> <div class="container d-flex justify-content-between align-items-center py-2">
+  <header id="mainNavbarMobile" class="d-xl-none fixed-top bg-white shadow-sm">
+    <div class="container d-flex justify-content-between align-items-center py-2">
       <a class="navbar-brand" href="index.html">
           <img src="./img/logos/SCM_logo_no background.png" alt="Surf Clube da Madeira Logo" style="height: 40px;">
       </a>
@@ -576,7 +582,7 @@
       <div class="carousel-indicators">
         <button type="button" data-bs-target="#surfClubCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
         <button type="button" data-bs-target="#surfClubCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-        <button type="button" data-bs-target="#surfClubCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        <button type="button" data-bs-target="#surfClubCarousel" data-bs-slide-to="2" aria-bs-slide-to="3" aria-label="Slide 3"></button>
         <button type="button" data-bs-target="#surfClubCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
         <button type="button" data-bs-target="#surfClubCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
       </div>
@@ -678,29 +684,24 @@
 
       // Function to update language links based on the current page
       function updateLanguageLinks() {
-          const currentPathname = window.location.pathname; // e.g., "/SurfClubeDaMadeiraWebsite/lessons.html" or "/SurfClubeDaMadeiraWebsite/pt/lessons.html"
+          const currentPathname = window.location.pathname; // e.g., "/SurfClubeDaMadeiraWebsite/lessons.html" or "/SurfClubeDaMadeiraWebsite/pl/lessons.html"
           let currentPageFilename = currentPathname.split('/').pop(); // e.g., "lessons.html" or "" if a directory name
 
           // If currentPathname ends with a slash (e.g., /pt/), the last .pop() will be empty.
           // In such cases, we assume the page is index.html within that directory.
-          if (currentPageFilename === '' || currentPathname.endsWith('/')) { // Simplified check for directory index.html
+          // Also handle cases like /repoName/ or /repoName
+          const repoName = '/staticWebsiteSCM';
+          if (currentPageFilename === '' || currentPathname.endsWith('/') || currentPathname === repoName || currentPathname === `${repoName}/`) {
               currentPageFilename = 'index.html';
           }
 
           // Determine the base URL including the repository name for GitHub Pages.
           let siteRootPath = '';
-          const repoName = '/staticWebsiteSCM'; // **CRITICAL: ENSURE THIS EXACTLY MATCHES YOUR REPO NAME WITH A LEADING SLASH**
-
           if (window.location.origin.includes('github.io') && currentPathname.startsWith(repoName)) {
               siteRootPath = repoName;
           }
-          // For custom domains, siteRootPath would be empty here if the site is at the root of the domain.
-          // For local testing via http-server, siteRootPath would also be empty unless you configure it.
+          // For custom domains or local testing, siteRootPath might be empty.
 
-          const fullSiteBaseUrl = window.location.origin + siteRootPath;
-
-
-          // Select all language links (both desktop and mobile)
           document.querySelectorAll('.dropdown-item[data-lang], .mobile-nav-link[data-lang]').forEach(link => {
               const targetLangCode = link.getAttribute('data-lang');
               if (!targetLangCode) return;
@@ -708,19 +709,13 @@
               const langConfig = languages[targetLangCode];
               if (!langConfig) return;
 
-              let targetAbsoluteUrl;
-
-              // Construct the full absolute URL for the target page in the target language.
-              // It will always start with the full site base URL.
-              if (langConfig.path === '') { // English is at the root level of the repository (or site)
-                  targetAbsoluteUrl = `${fullSiteBaseUrl}/${currentPageFilename}`;
-              } else { // Other languages are in subdirectories
-                  targetAbsoluteUrl = `${fullSiteBaseUrl}/${langConfig.path}${currentPageFilename}`;
-              }
-
+              // Construct the new path for the target language.
+              // This is the core of the URL construction logic.
+              let newPath = `${siteRootPath}/${langConfig.path}${currentPageFilename}`;
+              
               // Clean up any potential double slashes that might occur (e.g., if siteRootPath was empty or had a trailing slash)
-              // This regex handles multiple slashes and ensures https:// is preserved.
-              link.href = targetAbsoluteUrl.replace(/(https?:\/\/[^/]+)\/\/+/g, '$1/').replace(/\/\/+/g, '/');
+              // Ensure https:// is preserved correctly.
+              link.href = `${window.location.origin}${newPath.replace(/\/\/+/g, '/')}`;
           });
       }
 
@@ -728,45 +723,42 @@
       updateLanguageLinks();
 
       // --- MODIFIED SCRIPT for DESKTOP and MOBILE active nav link (handles hash correctly and language subdirectories) ---
-      const currentFullUrlPath = window.location.pathname; // e.g., "/SurfClubeDaMadeiraWebsite/lessons.html", "/pt/lessons.html"
-      const currentHash = window.location.hash; // e.g., "#FAQs" or empty string
+      // This part ensures the navigation links get the 'active' class
+      const currentFullUrlPathForNav = window.location.pathname; 
+      const currentHashForNav = window.location.hash; 
 
-      // Function to determine the base filename regardless of language prefix
-      function getBaseFilename(urlPath) {
-          const parts = urlPath.split('/').filter(s => s !== ''); // Filter out empty strings
-          let filename = parts.pop(); // Gets 'lessons.html' or 'pt'
+      const getBaseFilenameForNav = (urlPath) => {
+          const parts = urlPath.split('/').filter(s => s !== ''); 
+          let filename = parts.pop(); 
+          const repoName = '/staticWebsiteSCM';
 
-          // If the last part is a language folder (e.g., 'pt', 'es'), it means it was an index.html in that folder
+          // Check if it's a language subdirectory
           if (Object.keys(languages).some(langCode => languages[langCode].path === `${filename}/`)) {
-              return 'index.html'; // It was a URL like /repo/lang/ -> means lang/index.html
+              return 'index.html'; 
           }
-          // If the URL was just /repo/ or / -> means index.html
-          const repoName = '/staticWebsiteSCM'; // Match your repo name
+          // Check for root URL or repo root
           if (!filename && (urlPath === '/' || urlPath === repoName || urlPath === `${repoName}/`)) {
               return 'index.html';
           }
+          return filename || 'index.html'; 
+      };
 
-          return filename || 'index.html'; // Default to index.html if empty or root
-      }
-
-
-      const baseCurrentPageFilename = getBaseFilename(currentFullUrlPath);
+      const baseCurrentPageFilenameForNav = getBaseFilenameForNav(currentFullUrlPathForNav);
 
       document.querySelectorAll('#mainNavbar .nav-link, #mobileNavOverlay .mobile-nav-link').forEach(link => {
           const linkHref = link.getAttribute('href');
-          const linkBaseFilename = getBaseFilename(linkHref.split('#')[0]); // Get filename part of the link
+          const linkBaseFilename = getBaseFilenameForNav(linkHref.split('#')[0]);
           const linkHash = linkHref.includes('#') ? '#' + linkHref.split('#')[1] : '';
 
           let isActive = false;
 
-          // Check for page match first
-          if (linkBaseFilename === baseCurrentPageFilename) {
-              if (currentHash) { // If current URL has a hash
-                  if (linkHash && linkHash === currentHash) { // Match only if link's hash also matches
+          if (linkBaseFilename === baseCurrentPageFilenameForNav) {
+              if (currentHashForNav) {
+                  if (linkHash && linkHash === currentHashForNav) {
                       isActive = true;
                   }
-              } else { // If current URL does not have a hash
-                  if (!linkHash) { // Match only if link also has no hash
+              } else {
+                  if (!linkHash) {
                       isActive = true;
                   }
               }

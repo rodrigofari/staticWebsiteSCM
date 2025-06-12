@@ -47,7 +47,7 @@
         "addressLocality": "Porto da Cruz",
         "addressRegion": "Madeira",
         "postalCode": "9225-050", /* Placeholder: Confirm your actual Postal Code for Porto da Cruz */
-        "addressCountry": "PT"
+        "addressCountry": "PL"
       },
       "geo": {
         "@type": "GeoCoordinates",
@@ -169,17 +169,17 @@
                 <li><a href="careers.html" class="mobile-nav-link">Kariera</a></li>
                 <li><a href="contact.html" class="mobile-nav-link">Kontakt</a></li>
                 <li class="mt-4 border-top pt-4"> <span class="text-muted text-uppercase small fw-bold d-block mb-2">Język</span>
-                    <li><a class="dropdown-item" href="#" data-lang="en">English</a></li>
-                    <li><a class="dropdown-item" href="#" data-lang="pl">Polski</a></li>
-                    <li><a class="dropdown-item" href="#" data-lang="it">Italiano</a></li>
-                    <li><a class="dropdown-item" href="#" data-lang="de">Deutsch</a></li>
-                    <li><a class="dropdown-item" href="#" data-lang="fr">Français</a></li>
-                    <li><a class="dropdown-item" href="#" data-lang="pt">Português</a></li>
-                    <li><a class="dropdown-item" href="#" data-lang="es">Español</a></li>
-                    <li><a class="dropdown-item" href="#" data-lang="uk">Українська</a></li>
-                    <li><a class="dropdown-item" href="#" data-lang="fi">Suomi</a></li>
-                    <li><a class="dropdown-item" href="#" data-lang="sv">Svenska</a></li>
-                    <li><a class="dropdown-item" href="#" data-lang="ru">Русский</a></li>
+                    <a class="mobile-nav-link" href="#" data-lang="en">English</a>
+                    <a class="mobile-nav-link" href="#" data-lang="pl">Polski</a>
+                    <a class="mobile-nav-link" href="#" data-lang="it">Italiano</a>
+                    <a class="mobile-nav-link" href="#" data-lang="de">Deutsch</a>
+                    <a class="mobile-nav-link" href="#" data-lang="fr">Français</a>
+                    <a class="mobile-nav-link" href="#" data-lang="pt">Português</a>
+                    <a class="mobile-nav-link" href="#" data-lang="es">Español</a>
+                    <a class="mobile-nav-link" href="#" data-lang="uk">Українська</a>
+                    <a class="mobile-nav-link" href="#" data-lang="fi">Suomi</a>
+                    <a class="mobile-nav-link" href="#" data-lang="sv">Svenska</a>
+                    <a class="mobile-nav-link" href="#" data-lang="ru">Русский</a>
                 </li>
             </ul>
         </nav>
@@ -651,7 +651,7 @@
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous"></script>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -678,29 +678,24 @@
 
       // Function to update language links based on the current page
       function updateLanguageLinks() {
-          const currentPathname = window.location.pathname; // e.g., "/SurfClubeDaMadeiraWebsite/lessons.html" or "/SurfClubeDaMadeiraWebsite/pt/lessons.html"
+          const currentPathname = window.location.pathname; // e.g., "/SurfClubeDaMadeiraWebsite/lessons.html" or "/SurfClubeDaMadeiraWebsite/pl/lessons.html"
           let currentPageFilename = currentPathname.split('/').pop(); // e.g., "lessons.html" or "" if a directory name
 
           // If currentPathname ends with a slash (e.g., /pt/), the last .pop() will be empty.
           // In such cases, we assume the page is index.html within that directory.
-          if (currentPageFilename === '' || currentPathname.endsWith('/')) { // Simplified check for directory index.html
+          // Also handle cases like /repoName/ or /repoName
+          const repoName = '/staticWebsiteSCM';
+          if (currentPageFilename === '' || currentPathname.endsWith('/') || currentPathname === repoName || currentPathname === `${repoName}/`) {
               currentPageFilename = 'index.html';
           }
 
           // Determine the base URL including the repository name for GitHub Pages.
           let siteRootPath = '';
-          const repoName = '/staticWebsiteSCM'; // **CRITICAL: ENSURE THIS EXACTLY MATCHES YOUR REPO NAME WITH A LEADING SLASH**
-
           if (window.location.origin.includes('github.io') && currentPathname.startsWith(repoName)) {
               siteRootPath = repoName;
           }
-          // For custom domains, siteRootPath would be empty here if the site is at the root of the domain.
-          // For local testing via http-server, siteRootPath would also be empty unless you configure it.
+          // For custom domains or local testing, siteRootPath might be empty.
 
-          const fullSiteBaseUrl = window.location.origin + siteRootPath;
-
-
-          // Select all language links (both desktop and mobile)
           document.querySelectorAll('.dropdown-item[data-lang], .mobile-nav-link[data-lang]').forEach(link => {
               const targetLangCode = link.getAttribute('data-lang');
               if (!targetLangCode) return;
@@ -708,19 +703,13 @@
               const langConfig = languages[targetLangCode];
               if (!langConfig) return;
 
-              let targetAbsoluteUrl;
-
-              // Construct the full absolute URL for the target page in the target language.
-              // It will always start with the full site base URL.
-              if (langConfig.path === '') { // English is at the root level of the repository (or site)
-                  targetAbsoluteUrl = `${fullSiteBaseUrl}/${currentPageFilename}`;
-              } else { // Other languages are in subdirectories
-                  targetAbsoluteUrl = `${fullSiteBaseUrl}/${langConfig.path}${currentPageFilename}`;
-              }
-
+              // Construct the new path for the target language.
+              // This is the core of the URL construction logic.
+              let newPath = `${siteRootPath}/${langConfig.path}${currentPageFilename}`;
+              
               // Clean up any potential double slashes that might occur (e.g., if siteRootPath was empty or had a trailing slash)
-              // This regex handles multiple slashes and ensures https:// is preserved.
-              link.href = targetAbsoluteUrl.replace(/(https?:\/\/[^/]+)\/\/+/g, '$1/').replace(/\/\/+/g, '/');
+              // Ensure https:// is preserved correctly.
+              link.href = `${window.location.origin}${newPath.replace(/\/\/+/g, '/')}`;
           });
       }
 
@@ -728,45 +717,42 @@
       updateLanguageLinks();
 
       // --- MODIFIED SCRIPT for DESKTOP and MOBILE active nav link (handles hash correctly and language subdirectories) ---
-      const currentFullUrlPath = window.location.pathname; // e.g., "/SurfClubeDaMadeiraWebsite/lessons.html", "/pt/lessons.html"
-      const currentHash = window.location.hash; // e.g., "#FAQs" or empty string
+      // This part ensures the navigation links get the 'active' class
+      const currentFullUrlPathForNav = window.location.pathname; 
+      const currentHashForNav = window.location.hash; 
 
-      // Function to determine the base filename regardless of language prefix
-      function getBaseFilename(urlPath) {
-          const parts = urlPath.split('/').filter(s => s !== ''); // Filter out empty strings
-          let filename = parts.pop(); // Gets 'lessons.html' or 'pt'
+      const getBaseFilenameForNav = (urlPath) => {
+          const parts = urlPath.split('/').filter(s => s !== ''); 
+          let filename = parts.pop(); 
+          const repoName = '/staticWebsiteSCM';
 
-          // If the last part is a language folder (e.g., 'pt', 'es'), it means it was an index.html in that folder
+          // Check if it's a language subdirectory
           if (Object.keys(languages).some(langCode => languages[langCode].path === `${filename}/`)) {
-              return 'index.html'; // It was a URL like /repo/lang/ -> means lang/index.html
+              return 'index.html'; 
           }
-          // If the URL was just /repo/ or / -> means index.html
-          const repoName = '/staticWebsiteSCM'; // Match your repo name
+          // Check for root URL or repo root
           if (!filename && (urlPath === '/' || urlPath === repoName || urlPath === `${repoName}/`)) {
               return 'index.html';
           }
+          return filename || 'index.html'; 
+      };
 
-          return filename || 'index.html'; // Default to index.html if empty or root
-      }
-
-
-      const baseCurrentPageFilename = getBaseFilename(currentFullUrlPath);
+      const baseCurrentPageFilenameForNav = getBaseFilenameForNav(currentFullUrlPathForNav);
 
       document.querySelectorAll('#mainNavbar .nav-link, #mobileNavOverlay .mobile-nav-link').forEach(link => {
           const linkHref = link.getAttribute('href');
-          const linkBaseFilename = getBaseFilename(linkHref.split('#')[0]); // Get filename part of the link
+          const linkBaseFilename = getBaseFilenameForNav(linkHref.split('#')[0]);
           const linkHash = linkHref.includes('#') ? '#' + linkHref.split('#')[1] : '';
 
           let isActive = false;
 
-          // Check for page match first
-          if (linkBaseFilename === baseCurrentPageFilename) {
-              if (currentHash) { // If current URL has a hash
-                  if (linkHash && linkHash === currentHash) { // Match only if link's hash also matches
+          if (linkBaseFilename === baseCurrentPageFilenameForNav) {
+              if (currentHashForNav) {
+                  if (linkHash && linkHash === currentHashForNav) {
                       isActive = true;
                   }
-              } else { // If current URL does not have a hash
-                  if (!linkHash) { // Match only if link also has no hash
+              } else {
+                  if (!linkHash) {
                       isActive = true;
                   }
               }
